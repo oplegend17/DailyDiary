@@ -57,16 +57,29 @@ export default function CreateNote() {
       setLoading(false);
     }
   };
+  
+  const getMoodEmoji = (moodType) => {
+    const emojis = {
+      'Happy': '😊',
+      'Sad': '😔',
+      'Anxious': '😰',
+      'Excited': '🤩',
+      'Calm': '😌',
+      'Frustrated': '😤',
+      'Grateful': '🙏'
+    };
+    return emojis[moodType] || '';
+  };
 
   return (
     <div className="note-form-page">
-      <div className="page-header">
+      <header className="page-header">
         <h1 className="page-title">Create New Note</h1>
-      </div>
+      </header>
       
       {error && <div className="alert alert-error">{error}</div>}
       
-      <div className="note-form-container">
+      <div className="note-form-container card">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="title" className="form-label">Title</label>
@@ -76,8 +89,9 @@ export default function CreateNote() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Note title"
-              className="form-control"
+              className="form-input"
               required
+              autoFocus
             />
           </div>
           
@@ -89,38 +103,40 @@ export default function CreateNote() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your thoughts here..."
               rows="10"
-              className="form-control"
+              className="form-input form-textarea"
               required
             ></textarea>
           </div>
           
-          <div className="form-group">
-            <label htmlFor="mood" className="form-label">Mood (Optional)</label>
-            <select
-              id="mood"
-              value={mood}
-              onChange={(e) => setMood(e.target.value)}
-              className="form-control"
-            >
-              <option value="">Select mood</option>
-              {moodOptions.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="tags" className="form-label">Tags (Optional, comma-separated)</label>
-            <input
-              id="tags"
-              type="text"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              placeholder="work, personal, ideas, etc."
-              className="form-control"
-            />
+          <div className="form-row">
+            <div className="form-group mood-select-container">
+              <label htmlFor="mood" className="form-label">Mood (Optional)</label>
+              <select
+                id="mood"
+                value={mood}
+                onChange={(e) => setMood(e.target.value)}
+                className="form-input form-select"
+              >
+                <option value="">Select mood</option>
+                {moodOptions.map(option => (
+                  <option key={option} value={option}>
+                    {getMoodEmoji(option)} {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="form-group tags-input-container">
+              <label htmlFor="tags" className="form-label">Tags (Optional, comma-separated)</label>
+              <input
+                id="tags"
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="work, personal, ideas, etc."
+                className="form-input"
+              />
+            </div>
           </div>
           
           <div className="form-actions">
@@ -136,7 +152,21 @@ export default function CreateNote() {
               className="btn btn-primary"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save Note'}
+              {loading ? (
+                <>
+                  <span className="spinner-small"></span>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                  Save Note
+                </>
+              )}
             </button>
           </div>
         </form>
