@@ -76,24 +76,35 @@ function Calendar() {
   
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
+  const getMoodEmoji = (moodType) => {
+    const emojis = {
+      'Happy': '😊',
+      'Sad': '😔',
+      'Anxious': '😰',
+      'Excited': '🤩',
+      'Calm': '😌',
+      'Frustrated': '😤',
+      'Grateful': '🙏'
+    };
+    return emojis[moodType] || '';
+  };
+
   if (loading && !notes.length) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-t-blue-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Loading calendar...</p>
-        </div>
+      <div className="loading-spinner">
+        <div className="spinner"></div>
+        <p>Loading calendar...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-        <p className="text-red-600">Error loading calendar: {error}</p>
+      <div className="error-message">
+        <p>Error loading calendar: {error}</p>
         <button 
           onClick={fetchNotes}
-          className="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+          className="btn btn-primary mt-2"
         >
           Try Again
         </button>
@@ -102,122 +113,122 @@ function Calendar() {
   }
 
   return (
-    <div className="calendar-container p-4">
-      <div className="calendar-header flex items-center justify-between mb-6">
-        <button 
-          onClick={previousMonth}
-          className="prev-month-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-          Prev
-        </button>
-        
-        <h2 className="text-2xl font-semibold text-gray-800">{format(currentDate, 'MMMM yyyy')}</h2>
-        
-        <button 
-          onClick={nextMonth}
-          className="next-month-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center"
-        >
-          Next
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 ml-1">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-      </div>
+    <div className="calendar-page">
+      <header className="page-header">
+        <h1 className="page-title">Calendar</h1>
+      </header>
 
-      <div className="calendar-grid bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="weekday-header grid grid-cols-7 bg-blue-50 border-b border-gray-200">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="weekday p-2 text-center text-gray-600 font-medium">
-              {day}
-            </div>
-          ))}
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <button 
+            onClick={previousMonth}
+            className="month-nav-btn prev-btn"
+            aria-label="Previous month"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            <span>Prev</span>
+          </button>
+          
+          <h2 className="current-month">{format(currentDate, 'MMMM yyyy')}</h2>
+          
+          <button 
+            onClick={nextMonth}
+            className="month-nav-btn next-btn"
+            aria-label="Next month"
+          >
+            <span>Next</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
         </div>
 
-        <div className="days-grid grid grid-cols-7">
-          {calendarDays.map((day) => {
-            const dayNotes = getNotesForDate(day);
-            const isCurrentMonth = isSameMonth(day, currentDate);
-            const isToday = isSameDay(day, new Date());
-            const isSelected = selectedDay && isSameDay(day, selectedDay);
-            
-            return (
-              <div
-                key={day.toISOString()}
-                onClick={() => handleDayClick(day)}
-                className={`
-                  calendar-day relative p-1 min-h-[100px] border border-gray-100
-                  ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : 'bg-white text-gray-800'}
-                  ${isToday ? 'today bg-blue-50' : ''}
-                  ${isSelected ? 'selected bg-blue-100' : ''}
-                  ${dayNotes.length > 0 ? 'cursor-pointer hover:bg-gray-50' : ''}
-                  transition duration-150
-                `}
-              >
-                <div className={`
-                  day-number text-right p-1 font-medium
-                  ${isToday ? 'text-blue-600' : ''}
-                `}>
-                  {format(day, 'd')}
-                </div>
-                
-                {dayNotes.length > 0 && (
-                  <div className="day-notes mt-1">
-                    {dayNotes.length > 2 ? (
-                      <div className="notes-badge px-2 py-1 bg-blue-500 text-white text-xs rounded-full inline-block">
-                        {dayNotes.length} notes
-                      </div>
-                    ) : (
-                      dayNotes.slice(0, 2).map(note => (
-                        <div key={note.id} className="note-preview p-1 my-1 text-xs truncate bg-blue-50 rounded border-l-2 border-blue-400">
-                          {note.title}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                )}
+        <div className="calendar-grid">
+          <div className="weekday-header">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className="weekday">
+                {day}
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {selectedDay && dayNotes.length > 0 && (
-        <div className="selected-day-notes mt-6 bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-medium mb-3">
-            Notes for {format(selectedDay, 'MMMM d, yyyy')}
-          </h3>
-          <div className="notes-list space-y-3">
-            {dayNotes.map(note => (
-              <Link 
-                to={`/notes/${note.id}`}
-                key={note.id} 
-                className="note-item block p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition duration-150"
-              >
-                <h4 className="font-medium text-gray-800">{note.title}</h4>
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>
-                {note.mood && (
-                  <div className="note-mood mt-2">
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                      Mood: {note.mood}
-                    </span>
-                  </div>
-                )}
-              </Link>
             ))}
           </div>
-        </div>
-      )}
 
-      <div className="add-note-btn fixed bottom-6 right-6">
-        <Link 
-          to="/notes/new" 
-          className="flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-150"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          <div className="days-grid">
+            {calendarDays.map((day) => {
+              const dayNotes = getNotesForDate(day);
+              const isCurrentMonth = isSameMonth(day, currentDate);
+              const isToday = isSameDay(day, new Date());
+              const isSelected = selectedDay && isSameDay(day, selectedDay);
+              
+              return (
+                <div
+                  key={day.toISOString()}
+                  onClick={() => handleDayClick(day)}
+                  className={`
+                    calendar-day
+                    ${!isCurrentMonth ? 'other-month' : ''}
+                    ${isToday ? 'today' : ''}
+                    ${isSelected ? 'selected' : ''}
+                    ${dayNotes.length > 0 ? 'has-notes' : ''}
+                  `}
+                >
+                  <div className="day-number">
+                    {format(day, 'd')}
+                  </div>
+                  
+                  {dayNotes.length > 0 && (
+                    <div className="day-notes">
+                      {dayNotes.length > 2 ? (
+                        <div className="notes-count">
+                          {dayNotes.length} notes
+                        </div>
+                      ) : (
+                        dayNotes.slice(0, 2).map(note => (
+                          <div key={note.id} className="note-preview">
+                            {note.title}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {selectedDay && dayNotes.length > 0 && (
+          <div className="selected-day-notes">
+            <h3 className="selected-day-title">
+              Notes for {format(selectedDay, 'MMMM d, yyyy')}
+            </h3>
+            <div className="notes-list">
+              {dayNotes.map(note => (
+                <Link 
+                  to={`/notes/${note.id}`}
+                  key={note.id} 
+                  className="day-note-card"
+                >
+                  <h4 className="day-note-title">{note.title}</h4>
+                  <p className="day-note-excerpt">{note.content}</p>
+                  {note.mood && (
+                    <div className="day-note-mood">
+                      <span className="mood-badge">
+                        {getMoodEmoji(note.mood)} {note.mood}
+                      </span>
+                    </div>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <Link to="/notes/new" className="floating-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
         </Link>
       </div>
