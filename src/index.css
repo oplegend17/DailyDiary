@@ -217,49 +217,56 @@ ul, ol {
 
 /* Form Elements */
 .form-group {
-  margin-bottom: var(--spacing);
+  margin-bottom: 20px;
 }
 
 .form-label {
   display: block;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 6px;
   font-weight: 500;
   color: var(--text-dark);
 }
 
-.form-control {
-  display: block;
+.form-input {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--text);
-  background-color: var(--bg-card);
+  padding: 12px 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  transition: border-color var(--transition), box-shadow var(--transition);
+  border-radius: var(--radius);
+  background-color: var(--bg-card);
+  color: var(--text);
+  font-size: 15px;
+  transition: all var(--transition);
 }
 
-.form-control:focus {
+.form-input:focus {
   border-color: var(--primary);
   outline: none;
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
 
-textarea.form-control {
+.form-textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-select.form-control {
-  -webkit-appearance: none;
-  -moz-appearance: none;
+.form-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
-  padding-right: 36px;
+  padding-right: 40px;
+}
+
+/* Form validation */
+.form-input.is-invalid {
+  border-color: var(--danger);
+}
+
+.validation-message {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 /* Alert Messages */
@@ -444,8 +451,8 @@ select.form-control {
 }
 
 .header-search {
-  width: 400px;
   margin-bottom: 0;
+  max-width: 400px;
 }
 
 .user-info {
@@ -1028,4 +1035,107 @@ select.form-control {
   border-radius: var(--radius);
   margin: var(--spacing) 0;
   border-left: 4px solid var(--danger);
+}
+
+/* Search Component */
+.search-container {
+  position: relative;
+  max-width: 100%;
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  font-size: 15px;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-card);
+  color: var(--text);
+  height: 48px;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.search-input::placeholder {
+  color: var(--text-light);
+  opacity: 0.7;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.search-icon svg {
+  display: block;
+  stroke-width: 2px;
+}
+
+.clear-search {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  line-height: 1;
+  padding: 0;
+}
+
+.clear-search:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-dark);
+}
+
+.clear-search svg {
+  display: block;
+}
+
+/* Header search styles */
+.header-search {
+  margin-bottom: 0;
+  max-width: 400px;
+}
+
+.header-search .search-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  color: var(--text);
+  height: 40px;
+  font-size: 14px;
+  padding: 8px 16px 8px 36px;
+}
+
+.header-search .search-icon {
+  left: 10px;
+}
+
+.header-search .search-input:focus {
+  background-color: var(--bg-card);
+  border-color: var(--primary-light);
 }
