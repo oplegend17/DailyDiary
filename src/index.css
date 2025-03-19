@@ -1118,185 +1118,119 @@ ul, ol {
   transform: rotate(45deg);
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  :root {
-    --spacing: 12px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-  }
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-  .container {
-    padding: 0 var(--spacing);
-  }
-
-  .notes-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing);
-  }
-
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing);
-  }
-
-  .page-title {
-    font-size: 24px;
-  }
-
-  .form-actions {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .form-actions .btn {
-    width: 100%;
-  }
-
-  .note-detail-actions {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .note-detail-actions .btn {
-    width: 100%;
-  }
-
-  .floating-btn {
-    bottom: var(--spacing);
-    right: var(--spacing);
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-  }
-
-  .auth-card {
-    margin: var(--spacing);
-    padding: var(--spacing);
-  }
-
-  .calendar-container {
-    margin: 0;
-    padding: var(--spacing-sm);
-  }
-
-  .calendar-day {
-    min-height: 60px;
-    padding: 4px;
-  }
-
-  .day-number {
-    font-size: 12px;
-  }
-
-  .notes-count {
-    font-size: 10px;
-    padding: 1px 6px;
-  }
-
-  .note-preview {
-    font-size: 11px;
-    padding: 2px 4px;
-  }
+.sidebar-overlay.active {
+  opacity: 1;
+  display: block;
 }
 
 @media (max-width: 576px) {
+  /* App container and sidebar */
   .app-container {
     flex-direction: column;
   }
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  .hamburger {
     display: flex;
-    justify-content: space-around;
-    padding: var(--spacing-sm) 0;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1010;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    height: 100vh;
+    z-index: 1000;
+    background-color: var(--primary);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
   }
 
   .sidebar-header {
-    display: none;
-  }
-
-  .sidebar-nav {
-    padding: var(--spacing-sm) 0;
-  }
-
-  .sidebar-nav ul {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
+    height: 60px;
   }
 
-  .sidebar-nav li {
-    flex: 1;
-  }
-
-  .nav-link {
-    flex-direction: column;
-    align-items: center;
-    padding: var(--spacing-xs);
-    font-size: 12px;
-  }
-
-  .nav-icon {
-    margin-bottom: 4px;
-    width: 24px;
-    height: 24px;
-  }
-
-  .content {
-    margin-bottom: 70px;
-  }
-
+  /* Header adjustments */
   .header {
-    padding: var(--spacing-sm);
-  }
-
-  .search-container {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1001;
-    background: var(--bg-card);
-    padding: var(--spacing-sm);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    z-index: 990;
+    background-color: var(--bg-card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: var(--spacing);
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
   }
 
-  .search-container.mobile-search-visible {
-    transform: translateY(0);
+  .header-search {
+    width: 100%;
+    max-width: 100%;
+    margin: var(--spacing-sm) 0;
+  }
+
+  /* Adjust user info */
+  .user-info {
+    padding-left: 45px; /* Space for hamburger */
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  /* Content adjustments */
+  .content {
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+
+  /* Space for header */
+  .main-container {
+    margin-top: 130px;
+    padding: var(--spacing);
+  }
+
+  /* Search container */
+  .search-container {
+    width: 100%;
   }
 
   .search-input {
-    height: 40px;
-    font-size: 14px;
-  }
-
-  .mobile-search-toggle {
-    display: block;
-    padding: var(--spacing-sm);
-    background: none;
-    border: none;
-    color: var(--text);
-  }
-
-  .cancel-search-btn {
-    margin-top: var(--spacing-sm);
     width: 100%;
-    padding: var(--spacing-sm);
-    background: var(--bg);
-    border: 1px solid var(--border);
     border-radius: var(--radius);
-    color: var(--text);
+  }
+
+  /* Notes page adjustments */
+  .notes-page .search-container {
+    margin-bottom: var(--spacing);
   }
 
   .note-card {
@@ -1319,24 +1253,6 @@ ul, ol {
   .note-tags {
     order: -1;
     width: 100%;
-  }
-
-  .auth-container {
-    padding: var(--spacing);
-  }
-
-  .auth-title {
-    font-size: 24px;
-  }
-
-  .social-login-buttons {
-    flex-direction: column;
-  }
-
-  .remember-forgot {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    align-items: flex-start;
   }
 }
 
@@ -1369,6 +1285,23 @@ ul, ol {
   .nav-icon {
     width: 18px;
     height: 18px;
+  }
+
+  .header-search .search-input {
+    font-size: 13px;
+    height: 36px;
+    padding: 8px 30px 8px 30px;
+  }
+
+  .user-info {
+    font-size: 13px;
+  }
+
+  .user-email {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -2084,8 +2017,8 @@ input:checked + .toggle-slider:before {
   cursor: pointer;
   z-index: 1001;
   position: fixed;
-  top: 15px;
-  left: 15px;
+  top: 10px;
+  left: 10px;
   box-shadow: var(--shadow);
   transition: all var(--transition);
 }
@@ -2139,6 +2072,6 @@ input:checked + .toggle-slider:before {
   }
 
   .content {
-    margin-top: 60px;
+    margin-top: 110px;
   }
 }
