@@ -78,11 +78,11 @@ export default function Layout({ children }) {
 
       <aside className={`sidebar ${sidebarOpen ? 'active' : ''}`}>
         <div className="sidebar-header">
-          <Link to="/" className="logo">DailyNotes</Link>
+          <Link to="/dashboard" className="logo">DailyNotes</Link>
         </div>
         
         <nav className="sidebar-nav">
-          <NavLink to="/" className="nav-link" end onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
+          <NavLink to="/dashboard" className="nav-link" end onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="3" width="7" height="9" />

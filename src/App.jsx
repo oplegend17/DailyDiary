@@ -39,7 +39,7 @@ const PublicRoute = ({ children }) => {
   }
   
   if (user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/dashboard" />;
   }
   return children;
 };
@@ -57,7 +57,7 @@ function App() {
 
 // Separate component to use the useAuth hook which must be used within AuthProvider
 function AppContent() {
-  const { supabaseError, loading } = useAuth();
+  const { supabaseError, loading, user } = useAuth();
   
   if (loading) {
     return (
@@ -72,69 +72,77 @@ function AppContent() {
     return <SupabaseConnectionError />;
   }
   
+  // Determine if we need to render the layout (only for authenticated users)
+  const renderWithLayout = (element) => {
+    return user ? <Layout>{element}</Layout> : element;
+  };
+  
   return (
-    <Layout>
-      <Suspense fallback={
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading...</p>
-        </div>
-      }>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } />
-          <Route path="/signup" element={
-            <PublicRoute>
-              <SignUp />
-            </PublicRoute>
-          } />
+    <Suspense fallback={
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    }>
+      <Routes>
+        {/* Root route redirects to login by default or dashboard if authenticated */}
+        <Route path="/" element={
+          user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+        } />
 
-          {/* Protected routes */}
-          <Route path="/" element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/notes" element={
-            <ProtectedRoute>
-              <NotesList />
-            </ProtectedRoute>
-          } />
-          <Route path="/notes/new" element={
-            <ProtectedRoute>
-              <CreateNote />
-            </ProtectedRoute>
-          } />
-          <Route path="/notes/:id/edit" element={
-            <ProtectedRoute>
-              <EditNote />
-            </ProtectedRoute>
-          } />
-          <Route path="/notes/:id" element={
-            <ProtectedRoute>
-              <NoteDetail />
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          } />
-          <Route path="/calendar" element={
-            <ProtectedRoute>
-              <Calendar />
-            </ProtectedRoute>
-          } />
+        {/* Public routes without Layout */}
+        <Route path="/login" element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        } />
+        <Route path="/signup" element={
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
+        } />
 
-          {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+        {/* Protected routes with Layout */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            {renderWithLayout(<Dashboard />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/notes" element={
+          <ProtectedRoute>
+            {renderWithLayout(<NotesList />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/notes/new" element={
+          <ProtectedRoute>
+            {renderWithLayout(<CreateNote />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/notes/:id/edit" element={
+          <ProtectedRoute>
+            {renderWithLayout(<EditNote />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/notes/:id" element={
+          <ProtectedRoute>
+            {renderWithLayout(<NoteDetail />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            {renderWithLayout(<Settings />)}
+          </ProtectedRoute>
+        } />
+        <Route path="/calendar" element={
+          <ProtectedRoute>
+            {renderWithLayout(<Calendar />)}
+          </ProtectedRoute>
+        } />
+
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Suspense>
   );
 }
 
