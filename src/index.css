@@ -40,6 +40,7 @@ body {
   color: var(--text);
   background-color: var(--bg);
   line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
 }
 
 a {
@@ -1119,57 +1120,270 @@ ul, ol {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+  :root {
+    --spacing: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+  }
+
+  .container {
+    padding: 0 var(--spacing);
+  }
+
   .notes-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing);
   }
-  
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-sm);
+    margin-bottom: var(--spacing);
   }
-  
+
+  .page-title {
+    font-size: 24px;
+  }
+
   .form-actions {
     flex-direction: column;
+    gap: var(--spacing-sm);
   }
-  
+
   .form-actions .btn {
     width: 100%;
   }
-  
+
   .note-detail-actions {
     flex-direction: column;
+    gap: var(--spacing-sm);
   }
-  
+
   .note-detail-actions .btn {
     width: 100%;
   }
-  
+
   .floating-btn {
     bottom: var(--spacing);
     right: var(--spacing);
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .auth-card {
+    margin: var(--spacing);
+    padding: var(--spacing);
+  }
+
+  .calendar-container {
+    margin: 0;
+    padding: var(--spacing-sm);
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 4px;
+  }
+
+  .day-number {
+    font-size: 12px;
+  }
+
+  .notes-count {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+
+  .note-preview {
+    font-size: 11px;
+    padding: 2px 4px;
   }
 }
 
-/* Mobile menu styles */
 @media (max-width: 576px) {
-  .nav-menu {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-sm) 0;
+  }
+
+  .sidebar-header {
     display: none;
   }
-  
-  .mobile-menu-toggle {
-    display: block;
+
+  .sidebar-nav {
+    padding: var(--spacing-sm) 0;
   }
-  
-  .header-content {
-    flex-wrap: wrap;
-  }
-  
-  .search-form {
-    order: 3;
+
+  .sidebar-nav ul {
+    display: flex;
+    justify-content: space-around;
     width: 100%;
-    max-width: none;
+  }
+
+  .sidebar-nav li {
+    flex: 1;
+  }
+
+  .nav-link {
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-xs);
+    font-size: 12px;
+  }
+
+  .nav-icon {
+    margin-bottom: 4px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .content {
+    margin-bottom: 70px;
+  }
+
+  .header {
+    padding: var(--spacing-sm);
+  }
+
+  .search-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: var(--bg-card);
+    padding: var(--spacing-sm);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .search-container.mobile-search-visible {
+    transform: translateY(0);
+  }
+
+  .search-input {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .mobile-search-toggle {
+    display: block;
+    padding: var(--spacing-sm);
+    background: none;
+    border: none;
+    color: var(--text);
+  }
+
+  .cancel-search-btn {
     margin-top: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+  }
+
+  .note-card {
+    margin: var(--spacing-sm) 0;
+  }
+
+  .note-title {
+    font-size: 18px;
+  }
+
+  .note-excerpt {
+    -webkit-line-clamp: 2;
+  }
+
+  .note-meta {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .note-tags {
+    order: -1;
+    width: 100%;
+  }
+
+  .auth-container {
+    padding: var(--spacing);
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .social-login-buttons {
+    flex-direction: column;
+  }
+
+  .remember-forgot {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+}
+
+/* Additional Mobile Optimizations */
+@media (max-width: 360px) {
+  :root {
+    --spacing: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .note-title {
+    font-size: 16px;
+  }
+
+  .floating-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+
+  .nav-link {
+    font-size: 11px;
+  }
+
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+  .btn, .note-card, .nav-link {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:active, .note-card:active, .nav-link:active {
+    transform: scale(0.98);
+  }
+
+  .floating-btn:active {
+    transform: scale(0.95);
   }
 }
 
@@ -1853,5 +2067,78 @@ input:checked + .toggle-slider:before {
 
   .settings-actions .btn {
     width: 100%;
+  }
+}
+
+/* Hamburger Menu Styles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1001;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  box-shadow: var(--shadow);
+  transition: all var(--transition);
+}
+
+.hamburger div {
+  width: 20px;
+  height: 2px;
+  background-color: white;
+  border-radius: 5px;
+  transition: all 0.3s linear;
+  position: relative;
+  transform-origin: 1px;
+}
+
+.hamburger.active div:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.hamburger.active div:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active div:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+@media (max-width: 576px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    background-color: var(--primary);
+    box-shadow: var(--shadow);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .content {
+    padding-left: 0;
+  }
+
+  .content {
+    margin-top: 60px;
   }
 }

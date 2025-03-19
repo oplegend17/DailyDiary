@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -6,6 +6,7 @@ export default function Layout({ children }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const handleSignOut = async () => {
     await signOut();
@@ -23,16 +24,60 @@ export default function Layout({ children }) {
     if (!email) return '?';
     return email.charAt(0).toUpperCase();
   };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const sidebar = document.querySelector('.sidebar');
+      const hamburger = document.querySelector('.hamburger');
+      
+      if (sidebarOpen && 
+          sidebar && 
+          hamburger && 
+          !sidebar.contains(event.target) && 
+          !hamburger.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [sidebarOpen]);
+
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    return navigate(() => {
+      if (window.innerWidth <= 576) {
+        setSidebarOpen(false);
+      }
+    });
+  }, [navigate]);
   
   return (
     <div className="app-container">
-      <aside className="sidebar">
+      <button
+        className={`hamburger ${sidebarOpen ? 'active' : ''}`}
+        onClick={toggleSidebar}
+        aria-label="Toggle menu"
+      >
+        <div></div>
+        <div></div>
+        <div></div>
+      </button>
+
+      <aside className={`sidebar ${sidebarOpen ? 'active' : ''}`}>
         <div className="sidebar-header">
           <Link to="/" className="logo">DailyNotes</Link>
         </div>
         
         <nav className="sidebar-nav">
-          <NavLink to="/" className="nav-link" end>
+          <NavLink to="/" className="nav-link" end onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="3" width="7" height="9" />
@@ -44,7 +89,7 @@ export default function Layout({ children }) {
             Dashboard
           </NavLink>
           
-          <NavLink to="/notes" className="nav-link">
+          <NavLink to="/notes" className="nav-link" onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -57,7 +102,7 @@ export default function Layout({ children }) {
             All Notes
           </NavLink>
           
-          <NavLink to="/create" className="nav-link">
+          <NavLink to="/create" className="nav-link" onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -67,7 +112,7 @@ export default function Layout({ children }) {
             New Note
           </NavLink>
           
-          <NavLink to="/calendar" className="nav-link">
+          <NavLink to="/calendar" className="nav-link" onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -79,7 +124,7 @@ export default function Layout({ children }) {
             Calendar
           </NavLink>
           
-          <NavLink to="/settings" className="nav-link">
+          <NavLink to="/settings" className="nav-link" onClick={() => window.innerWidth <= 576 && setSidebarOpen(false)}>
             <span className="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="3" />
