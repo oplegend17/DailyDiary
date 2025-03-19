@@ -116,7 +116,7 @@ function Dashboard() {
             {dashboardData.recentNotes.length === 0 ? (
               <div className="empty-state">
                 <p className="empty-state-text">You haven't created any notes yet.</p>
-                <Link to="/create" className="btn btn-primary">Create Your First Note</Link>
+                <Link to="/notes/new" className="btn btn-primary">Create Your First Note</Link>
               </div>
             ) : (
               <div className="recent-notes-list">

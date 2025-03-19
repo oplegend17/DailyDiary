@@ -119,7 +119,6 @@ function AppContent() {
               <NoteDetail />
             </ProtectedRoute>
           } />
-          <Route path="/create" element={<Navigate to="/notes/new" />} />
           <Route path="/settings" element={
             <ProtectedRoute>
               <Settings />

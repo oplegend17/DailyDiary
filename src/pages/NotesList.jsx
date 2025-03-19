@@ -195,7 +195,7 @@ export default function NotesList() {
                   : `Click the button below to create your first note`}
               </p>
               {!searchTerm && (
-                <Link to="/create" className="btn btn-primary">Create Your First Note</Link>
+                <Link to="/notes/new" className="btn btn-primary">Create Your First Note</Link>
               )}
             </div>
           ) : (
@@ -274,7 +274,7 @@ export default function NotesList() {
         </div>
       )}
       
-      <Link to="/create" className="floating-btn">
+      <Link to="/notes/new" className="floating-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
