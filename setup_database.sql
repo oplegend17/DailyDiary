@@ -165,4 +165,50 @@ VALUES
 -- VERIFICATION QUERY
 -- =================================================================
 -- Run this to verify that your setup was successful
-SELECT 'Database setup completed successfully!' as result; 
+SELECT 'Database setup completed successfully!' as result;
+
+-- =================================================================
+-- CREATE USER SETTINGS TABLE
+-- =================================================================
+CREATE TABLE IF NOT EXISTS public.user_settings (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  settings JSONB NOT NULL DEFAULT '{"darkMode": false, "emailNotifications": true, "defaultMood": "neutral"}'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE(user_id)
+);
+
+-- Enable Row Level Security
+ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+CREATE POLICY "Users can view their own settings"
+  ON public.user_settings
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own settings"
+  ON public.user_settings
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own settings"
+  ON public.user_settings
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Create function to handle updated_at
+CREATE OR REPLACE FUNCTION handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_user_settings_updated_at
+  BEFORE UPDATE ON public.user_settings
+  FOR EACH ROW
+  EXECUTE FUNCTION handle_updated_at(); 

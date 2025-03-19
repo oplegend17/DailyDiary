@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 
-function Settings() {
+export default function Settings() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [settings, setSettings] = useState({
     darkMode: false,
     emailNotifications: true,
@@ -15,198 +15,221 @@ function Settings() {
   });
 
   useEffect(() => {
-    fetchSettings();
+    if (user) {
+      fetchSettings();
+    }
   }, [user]);
 
-  async function fetchSettings() {
-    if (!user) return;
-    
+  const fetchSettings = async () => {
     try {
-      console.log('Fetching settings for user:', user.id);
       setLoading(true);
-      
-      const { data, error } = await supabase
+      setError('');
+
+      const { data, error: fetchError } = await supabase
         .from('user_settings')
-        .select('*')
+        .select('settings')
         .eq('user_id', user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching settings:', error);
-        throw error;
-      }
-      
-      if (data) {
-        console.log('Settings loaded:', data.settings);
+      if (fetchError) {
+        console.error('Error fetching settings:', fetchError);
+        // If settings don't exist, we'll create them with defaults
+        if (fetchError.code === 'PGRST116') {
+          const { error: insertError } = await supabase
+            .from('user_settings')
+            .insert([
+              {
+                user_id: user.id,
+                settings: {
+                  darkMode: false,
+                  emailNotifications: true,
+                  defaultMood: 'neutral'
+                }
+              }
+            ]);
+
+          if (insertError) {
+            throw insertError;
+          }
+        } else {
+          throw fetchError;
+        }
+      } else if (data) {
         setSettings(data.settings);
-      } else {
-        console.log('No settings found, using defaults');
       }
-    } catch (err) {
-      console.error('Failed to fetch settings:', err);
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
       setError('Failed to load settings. Please try again.');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaving(true);
-    setError(null);
-    setMessage(null);
-    
     try {
-      console.log('Saving settings:', settings);
-      
-      const { error } = await supabase
+      setSaving(true);
+      setError('');
+      setMessage('');
+
+      const { error: upsertError } = await supabase
         .from('user_settings')
         .upsert({
           user_id: user.id,
-          settings: settings,
-          updated_at: new Date().toISOString()
+          settings: settings
+        }, {
+          onConflict: 'user_id'
         });
 
-      if (error) {
-        console.error('Error saving settings:', error);
-        throw error;
+      if (upsertError) {
+        throw upsertError;
       }
-      
+
       setMessage('Settings saved successfully!');
-      
-      // Auto-hide success message after 3 seconds
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    } catch (err) {
-      console.error('Failed to save settings:', err);
+    } catch (error) {
+      console.error('Error saving settings:', error);
       setError('Failed to save settings. Please try again.');
     } finally {
       setSaving(false);
     }
-  }
-  
-  function handleToggle(setting) {
-    setSettings({
-      ...settings,
-      [setting]: !settings[setting]
-    });
-  }
+  };
+
+  const handleToggle = (setting) => {
+    setSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-t-blue-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Loading settings...</p>
+      <div className="settings-page">
+        <div className="settings-container">
+          <div className="loading-spinner">Loading settings...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="settings-container p-4 max-w-2xl mx-auto">
-      <div className="settings-header mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Settings</h1>
-        <p className="text-gray-600 mt-2">Customize your DailyNotes experience</p>
-      </div>
-      
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
-          <p>{error}</p>
+    <div className="settings-page">
+      <div className="settings-container">
+        <div className="settings-header">
+          <h1 className="settings-title">Settings</h1>
+          <p className="settings-subtitle">Customize your DailyNotes experience</p>
         </div>
-      )}
 
-      {message && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-6">
-          <p>{message}</p>
-        </div>
-      )}
+        {error && (
+          <div className="alert alert-error" role="alert">
+            {error}
+          </div>
+        )}
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {message && (
+          <div className="alert alert-success" role="alert">
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
-          <div className="p-6">
-            <h2 className="text-lg font-medium text-gray-800 mb-4">Appearance</h2>
-            
-            <div className="form-group mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="font-medium text-gray-700">Dark Mode</label>
-                  <p className="text-sm text-gray-500">Switch to dark theme</p>
-                </div>
-                <div className="toggle-switch">
-                  <button 
-                    type="button"
-                    onClick={() => handleToggle('darkMode')}
-                    className={`relative inline-flex items-center h-6 rounded-full w-12 transition-colors focus:outline-none ${settings.darkMode ? 'bg-blue-600' : 'bg-gray-300'}`}
-                  >
-                    <span className={`absolute inline-block h-4 w-4 rounded-full bg-white transition-transform ${settings.darkMode ? 'translate-x-7' : 'translate-x-1'}`}></span>
-                  </button>
-                </div>
+          <div className="settings-section">
+            <h2 className="section-title">
+              <span className="section-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="5"/>
+                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+              </span>
+              Appearance
+            </h2>
+            <div className="settings-option">
+              <div className="option-label">
+                <span>Dark Mode</span>
+                <span className="option-description">Switch to dark theme</span>
               </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={settings.darkMode}
+                  onChange={() => handleToggle('darkMode')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
             </div>
-            
-            <h2 className="text-lg font-medium text-gray-800 mb-4 mt-8">Notifications</h2>
-            
-            <div className="form-group mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="font-medium text-gray-700">Email Notifications</label>
-                  <p className="text-sm text-gray-500">Receive email updates and reminders</p>
-                </div>
-                <div className="toggle-switch">
-                  <button 
-                    type="button"
-                    onClick={() => handleToggle('emailNotifications')}
-                    className={`relative inline-flex items-center h-6 rounded-full w-12 transition-colors focus:outline-none ${settings.emailNotifications ? 'bg-blue-600' : 'bg-gray-300'}`}
-                  >
-                    <span className={`absolute inline-block h-4 w-4 rounded-full bg-white transition-transform ${settings.emailNotifications ? 'translate-x-7' : 'translate-x-1'}`}></span>
-                  </button>
-                </div>
+          </div>
+
+          <div className="settings-section">
+            <h2 className="section-title">
+              <span className="section-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </span>
+              Notifications
+            </h2>
+            <div className="settings-option">
+              <div className="option-label">
+                <span>Email Notifications</span>
+                <span className="option-description">Receive email updates and reminders</span>
               </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={settings.emailNotifications}
+                  onChange={() => handleToggle('emailNotifications')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
             </div>
-            
-            <h2 className="text-lg font-medium text-gray-800 mb-4 mt-8">Note Settings</h2>
-            
-            <div className="form-group mb-4">
-              <label htmlFor="defaultMood" className="block font-medium text-gray-700 mb-2">Default Mood</label>
+          </div>
+
+          <div className="settings-section">
+            <h2 className="section-title">
+              <span className="section-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </span>
+              Note Settings
+            </h2>
+            <div className="settings-option">
+              <div className="option-label">
+                <span>Default Mood</span>
+                <span className="option-description">Set the default mood for new notes</span>
+              </div>
               <select
-                id="defaultMood"
+                className="form-select"
                 value={settings.defaultMood}
-                onChange={(e) => setSettings({ ...settings, defaultMood: e.target.value })}
-                className="w-full p-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) => setSettings(prev => ({ ...prev, defaultMood: e.target.value }))}
               >
-                <option value="happy">Happy</option>
                 <option value="neutral">Neutral</option>
+                <option value="happy">Happy</option>
                 <option value="sad">Sad</option>
-                <option value="angry">Angry</option>
                 <option value="excited">Excited</option>
                 <option value="tired">Tired</option>
-                <option value="anxious">Anxious</option>
-                <option value="peaceful">Peaceful</option>
               </select>
             </div>
           </div>
-          
-          <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
-            <button 
-              type="submit" 
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 flex items-center"
-              disabled={saving}
-            >
-              {saving && (
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+
+          <div className="settings-actions">
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              {saving ? (
+                <>
+                  <span className="spinner-small"></span>
+                  Saving...
+                </>
+              ) : (
+                'Save Settings'
               )}
-              {saving ? 'Saving...' : 'Save Settings'}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
-
-export default Settings; 
+} 
