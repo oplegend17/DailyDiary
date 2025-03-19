@@ -4,7 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>DailyNotes - Your Personal Daily Journal</title>
+    <script>
+      // Clear any problematic session data that might cause auto-login issues
+      (function() {
+        try {
+          // Check for any potentially invalid Supabase token
+          const authToken = localStorage.getItem('supabase.auth.token');
+          if (authToken) {
+            try {
+              const parsed = JSON.parse(authToken);
+              // Check if token is expired or malformed
+              if (!parsed || !parsed.expires_at || new Date(parsed.expires_at * 1000) < new Date()) {
+                console.log('Clearing invalid auth session on page load');
+                localStorage.removeItem('supabase.auth.token');
+              }
+            } catch (e) {
+              console.error('Error parsing auth token, clearing it', e);
+              localStorage.removeItem('supabase.auth.token');
+            }
+          }
+        } catch (error) {
+          console.error('Error checking session:', error);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

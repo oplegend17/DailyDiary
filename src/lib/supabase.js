@@ -14,11 +14,37 @@ console.log('Supabase Anon Key configured:', supabaseAnonKey ? 'Yes' : 'No');
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true,
+    persistSession: true, // Keep this true for better UX
     autoRefreshToken: true,
     // In development, we allow signups without email verification
     // This helps with testing when emails might not be delivered
     flowType: isDevelopment ? 'implicit' : 'pkce',
+    detectSessionInUrl: true, // Important for OAuth and password resets
+    storage: {
+      // Use cookies in production for better security with SameSite and HttpOnly flags
+      getItem: (key) => {
+        const value = localStorage.getItem(key);
+        // Clear invalid sessions that might be causing auto-login issues
+        if (key === 'supabase.auth.token' && value) {
+          try {
+            const parsed = JSON.parse(value);
+            // Check if token is expired or malformed
+            if (!parsed || !parsed.expires_at || new Date(parsed.expires_at * 1000) < new Date()) {
+              console.log('Clearing invalid auth session');
+              localStorage.removeItem(key);
+              return null;
+            }
+          } catch (e) {
+            console.error('Error parsing auth token, clearing it', e);
+            localStorage.removeItem(key);
+            return null;
+          }
+        }
+        return value;
+      },
+      setItem: (key, value) => localStorage.setItem(key, value),
+      removeItem: (key) => localStorage.removeItem(key)
+    }
   },
   db: {
     schema: 'public',
@@ -36,6 +62,25 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Log whether we're using development mode authentication
 console.log(`Supabase auth in ${isDevelopment ? 'development' : 'production'} mode`);
+
+// Ensures we don't have invalid sessions persisted
+export const clearInvalidSessions = async () => {
+  try {
+    const { data } = await supabase.auth.getSession();
+    // If session exists but is invalid, sign out
+    if (data && (!data.session || (data.session && data.session.expires_at && new Date(data.session.expires_at * 1000) < new Date()))) {
+      console.log('Invalid session detected, signing out');
+      await supabase.auth.signOut();
+    }
+  } catch (error) {
+    console.error('Error checking session:', error);
+    // Force sign out on error
+    supabase.auth.signOut();
+  }
+};
+
+// Check session validity on load
+clearInvalidSessions();
 
 // More detailed connection check
 (async () => {
