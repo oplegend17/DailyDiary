@@ -774,6 +774,7 @@ ul, ol {
   padding: var(--spacing-lg);
   box-shadow: var(--shadow);
   transition: all var(--transition);
+  width: 100%;
 }
 
 .form-row {
@@ -788,8 +789,178 @@ ul, ol {
     gap: var(--spacing);
   }
   
+  .note-form-page {
+    padding: var(--spacing-sm);
+    max-width: 100%;
+  }
+  
   .note-form-container {
+    padding: var(--spacing-md);
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Content layout improvements */
+  .content {
+    width: 100%;
+  }
+  
+  /* Improve header spacing */
+  .header {
+    width: 100%;
+    padding: var(--spacing) var(--spacing-md);
+  }
+  
+  /* Make note cards wider */
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .note-card {
+    margin: 0 0 var(--spacing-md) 0;
+    width: 100%;
+  }
+  
+  .note-link {
+    padding: var(--spacing-md);
+  }
+  
+  /* Dashboard layout improvements */
+  .dashboard-container {
+    padding: 0 var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    width: 100%;
+  }
+  
+  .recent-notes-list {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  
+  /* Search improvements */
+  .search-container {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .header-search {
+    width: 100%;
+    margin: var(--spacing-sm) 0;
+  }
+  
+  /* Calendar adjustments */
+  .calendar-container {
+    padding: var(--spacing-sm);
+    width: 100%;
+  }
+
+  /* Adjust content width for better mobile experience */
+  .main-container {
+    padding: var(--spacing-sm);
+    width: 100%;
+  }
+
+  /* Improve form responsiveness */
+  .note-form-page {
+    padding: 0;
+  }
+  
+  .note-form-container {
+    border-radius: 0;
+    box-shadow: none;
     padding: var(--spacing);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+
+  /* Ensure form inputs have proper spacing */
+  .form-input, 
+  .form-textarea,
+  .form-select {
+    height: auto;
+    min-height: 50px;
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: var(--spacing);
+  }
+  
+  .form-textarea {
+    min-height: 150px;
+  }
+  
+  .form-label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  /* Button improvements for touch */
+  .btn {
+    padding: 12px 24px;
+    min-height: 50px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    touch-action: manipulation;
+  }
+  
+  .btn-sm {
+    min-height: 40px;
+    font-size: 14px;
+  }
+  
+  .btn-lg {
+    min-height: 56px;
+    font-size: 18px;
+  }
+  
+  /* Make tags more touchable */
+  .note-tag {
+    padding: 6px 12px;
+    margin: 4px;
+    font-size: 14px;
+    border-radius: 16px;
+  }
+  
+  /* Better spacing between form sections */
+  .form-group + .form-group {
+    margin-top: var(--spacing-md);
+  }
+  
+  /* Wider form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Final form action button adjustments */
+  .form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing);
+    width: 100%;
+    margin-top: var(--spacing-md);
+  }
+  
+  .form-actions .btn {
+    padding: 12px 0;
+    width: 100%;
   }
 }
 
