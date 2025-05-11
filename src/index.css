@@ -332,7 +332,9 @@ ul, ol {
   background-color: rgba(255, 183, 3, 0.15);
   color: var(--warning);
 }
-
+.form-input-settings{
+  width: 50% !important;
+}
 /* Layout Components */
 .app-container {
   min-height: 100vh;

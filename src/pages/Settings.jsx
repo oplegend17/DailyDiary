@@ -9,7 +9,6 @@ export default function Settings() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [settings, setSettings] = useState({
-    darkMode: false,
     emailNotifications: true,
     defaultMood: 'neutral'
   });
@@ -41,7 +40,6 @@ export default function Settings() {
               {
                 user_id: user.id,
                 settings: {
-                  darkMode: false,
                   emailNotifications: true,
                   defaultMood: 'neutral'
                 }
@@ -136,32 +134,6 @@ export default function Settings() {
             <h2 className="section-title">
               <span className="section-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5"/>
-                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                </svg>
-              </span>
-              Appearance
-            </h2>
-            <div className="settings-option">
-              <div className="option-label">
-                <span>Dark Mode</span>
-                <span className="option-description">Switch to dark theme</span>
-              </div>
-              <label className="toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={settings.darkMode}
-                  onChange={() => handleToggle('darkMode')}
-                />
-                <span className="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div className="settings-section">
-            <h2 className="section-title">
-              <span className="section-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
@@ -197,13 +169,16 @@ export default function Settings() {
               </span>
               Note Settings
             </h2>
-            <div className="settings-option">
-              <div className="option-label">
-                <span>Default Mood</span>
-                <span className="option-description">Set the default mood for new notes</span>
+            <div className="settings-option" style={{ background: 'rgba(255,182,193,0.15)', borderRadius: '12px', border: '1.5px solid #ffb6c1', padding: '24px', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 2px 8px rgba(255,182,193,0.10)' }}>
+              <div className="option-label" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span style={{ fontWeight: 600, color: '#2b2d42', fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span role="img" aria-label="mood" style={{ fontSize: 22, marginRight: 6 }}>😊</span> Default Mood
+                </span>
+                <span className="option-description" style={{ fontSize: 14, color: '#6c757d', marginTop: 4 }}>Set the default mood for new notes</span>
               </div>
               <select
-                className="form-select"
+                className="form-input form-input-settings form-select"
+                style={{ minWidth: 140, fontSize: 16, border: '1.5px solid #ffb6c1', background: 'white', borderRadius: 8, padding: '8px 16px' }}
                 value={settings.defaultMood}
                 onChange={(e) => setSettings(prev => ({ ...prev, defaultMood: e.target.value }))}
               >
