@@ -1,20 +1,20 @@
 /* Modern Clean Design - No Tailwind */
 :root {
-  --primary: #4361ee;
-  --primary-hover: #3a56d4;
-  --secondary: #2ec4b6;
+  --primary: #ff69b4;
+  --primary-hover: #ff1493;
+  --secondary: #ffb6c1;
   --danger: #e63946;
   --warning: #ffb703;
   --success: #06d6a0;
   --text: #2b2d42;
   --text-light: #6c757d;
   --text-dark: #212529;
-  --bg: #f8f9fa;
+  --bg: #fff0f5;
   --bg-card: #ffffff;
-  --border: #dee2e6;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --border: #ffc0cb;
+  --shadow-sm: 0 2px 4px rgba(255, 105, 180, 0.1);
+  --shadow: 0 4px 6px rgba(255, 105, 180, 0.15);
+  --shadow-lg: 0 10px 15px rgba(255, 105, 180, 0.2);
   --radius: 8px;
   --radius-sm: 4px;
   --radius-lg: 12px;
@@ -149,24 +149,24 @@ ul, ol {
 .btn-primary {
   background-color: var(--primary);
   color: white;
-  box-shadow: 0 4px 6px rgba(67, 97, 238, 0.15);
+  box-shadow: 0 4px 6px rgba(255, 105, 180, 0.15);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 6px 8px rgba(67, 97, 238, 0.25);
+  box-shadow: 0 6px 8px rgba(255, 105, 180, 0.25);
   transform: translateY(-2px);
 }
 
 .btn-secondary {
   background-color: var(--secondary);
   color: white;
-  box-shadow: 0 4px 6px rgba(46, 196, 182, 0.15);
+  box-shadow: 0 4px 6px rgba(255, 182, 193, 0.15);
 }
 
 .btn-secondary:hover {
-  background-color: #25a89c;
-  box-shadow: 0 6px 8px rgba(46, 196, 182, 0.25);
+  background-color: #ffb6c1;
+  box-shadow: 0 6px 8px rgba(255, 182, 193, 0.25);
   transform: translateY(-2px);
 }
 
@@ -192,7 +192,7 @@ ul, ol {
 .btn-outline:hover {
   border-color: var(--primary);
   color: var(--primary);
-  background-color: rgba(67, 97, 238, 0.05);
+  background-color: rgba(255, 105, 180, 0.05);
   transform: translateY(-2px);
 }
 
@@ -242,7 +242,7 @@ ul, ol {
 .form-input:focus {
   border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
 }
 
 .form-textarea {
@@ -309,12 +309,12 @@ ul, ol {
 }
 
 .badge-primary {
-  background-color: rgba(67, 97, 238, 0.15);
+  background-color: rgba(255, 105, 180, 0.15);
   color: var(--primary);
 }
 
 .badge-secondary {
-  background-color: rgba(46, 196, 182, 0.15);
+  background-color: rgba(255, 182, 193, 0.15);
   color: var(--secondary);
 }
 
@@ -336,6 +336,7 @@ ul, ol {
 /* Layout Components */
 .app-container {
   min-height: 100vh;
+  width: 90vw;
   display: flex;
   background-color: var(--bg);
 }
@@ -587,7 +588,7 @@ ul, ol {
 }
 
 .note-tag {
-  background-color: rgba(67, 97, 238, 0.1);
+  background-color: rgba(255, 105, 180, 0.1);
   color: var(--primary);
   border-radius: 12px;
   padding: 4px 10px;
@@ -597,7 +598,7 @@ ul, ol {
 }
 
 .note-tag:hover {
-  background-color: rgba(67, 97, 238, 0.2);
+  background-color: rgba(255, 105, 180, 0.2);
 }
 
 .note-actions {
@@ -626,7 +627,7 @@ ul, ol {
 }
 
 .note-action-btn.edit:hover {
-  background-color: rgba(67, 97, 238, 0.08);
+  background-color: rgba(255, 105, 180, 0.08);
 }
 
 .note-action-btn.delete {
@@ -698,7 +699,7 @@ ul, ol {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(67, 97, 238, 0.2);
+  border: 3px solid rgba(255, 105, 180, 0.2);
   border-radius: 50%;
   border-top-color: var(--primary);
   animation: spin 1s linear infinite;
@@ -979,7 +980,7 @@ ul, ol {
 .form-input:focus {
   border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
 }
 
 .form-input::placeholder {
@@ -1038,7 +1039,7 @@ ul, ol {
   min-height: 100vh;
   padding: var(--spacing);
   background-color: var(--bg);
-  background-image: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%);
+  background-image: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 105, 180, 0.05) 100%);
 }
 
 .auth-container {
@@ -1051,12 +1052,12 @@ ul, ol {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(67, 97, 238, 0.1);
+  border: 1px solid rgba(255, 105, 180, 0.1);
   transition: all var(--transition);
 }
 
 .auth-card:hover {
-  box-shadow: 0 15px 30px rgba(67, 97, 238, 0.1);
+  box-shadow: 0 15px 30px rgba(255, 105, 180, 0.1);
   transform: translateY(-5px);
 }
 
@@ -1117,7 +1118,7 @@ ul, ol {
 
 .auth-form .form-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
 }
 
 .auth-form .btn {
@@ -1130,12 +1131,12 @@ ul, ol {
 
 .auth-form .btn-primary {
   background-color: var(--primary);
-  box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+  box-shadow: 0 4px 8px rgba(255, 105, 180, 0.2);
 }
 
 .auth-form .btn-primary:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 6px 12px rgba(67, 97, 238, 0.25);
+  box-shadow: 0 6px 12px rgba(255, 105, 180, 0.25);
   transform: translateY(-2px);
 }
 
@@ -1264,7 +1265,7 @@ ul, ol {
 }
 
 .checkbox-container:hover input ~ .checkmark {
-  background-color: rgba(67, 97, 238, 0.05);
+  background-color: rgba(255, 105, 180, 0.05);
 }
 
 .checkbox-container input:checked ~ .checkmark {
@@ -1674,7 +1675,7 @@ ul, ol {
 .search-input:focus {
   border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
 }
 
 .search-input::placeholder {
@@ -1853,11 +1854,11 @@ ul, ol {
 }
 
 .calendar-day.today {
-  background-color: rgba(67, 97, 238, 0.05);
+  background-color: rgba(255, 105, 180, 0.05);
 }
 
 .calendar-day.selected {
-  background-color: rgba(67, 97, 238, 0.1);
+  background-color: rgba(255, 105, 180, 0.1);
   border-color: var(--primary);
 }
 
@@ -1866,7 +1867,7 @@ ul, ol {
 }
 
 .calendar-day.has-notes:hover {
-  background-color: rgba(67, 97, 238, 0.08);
+  background-color: rgba(255, 105, 180, 0.08);
 }
 
 .day-number {
@@ -1898,7 +1899,7 @@ ul, ol {
 .note-preview {
   margin: 4px 0;
   padding: 4px 8px;
-  background-color: rgba(67, 97, 238, 0.1);
+  background-color: rgba(255, 105, 180, 0.1);
   border-left: 2px solid var(--primary);
   border-radius: 2px;
   font-size: 12px;
@@ -1973,7 +1974,7 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  background-color: rgba(67, 97, 238, 0.1);
+  background-color: rgba(255, 105, 180, 0.1);
   color: var(--primary);
   border-radius: 12px;
   font-size: 12px;
@@ -2012,7 +2013,7 @@ ul, ol {
 .settings-header {
   padding: var(--spacing-lg);
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(to right, rgba(67, 97, 238, 0.05), transparent);
+  background: linear-gradient(to right, rgba(255, 105, 180, 0.05), transparent);
 }
 
 .settings-title {
@@ -2052,7 +2053,7 @@ ul, ol {
   width: 32px;
   height: 32px;
   margin-right: var(--spacing-sm);
-  background-color: rgba(67, 97, 238, 0.1);
+  background-color: rgba(255, 105, 180, 0.1);
   color: var(--primary);
   border-radius: var(--radius);
 }
