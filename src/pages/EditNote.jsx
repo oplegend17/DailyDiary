@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -14,7 +14,39 @@ export default function EditNote() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+
+  const LOCAL_STORAGE_KEY = `unsaved_edit_note_${id}_${user?.id || 'anonymous'}`;
+
+  // Load from local storage on mount
+  useEffect(() => {
+    const savedNote = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedNote) {
+      const { title: savedTitle, content: savedContent } = JSON.parse(savedNote);
+      setTitle(savedTitle);
+      setContent(savedContent);
+      setError('Unsaved changes loaded from previous session.');
+    }
+  }, [id, user]);
+
+  // Debounced auto-save to local storage
+  useEffect(() => {
+    setIsAutoSaving(true);
+    const handler = setTimeout(() => {
+      if (title.trim() || content.trim()) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ title, content }));
+        console.log('Auto-saved edit to local storage');
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+      setIsAutoSaving(false);
+    }, 1000); // Save after 1 second of inactivity
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [title, content, id, user]);
+
   const moodOptions = [
     { label: 'Happy', emoji: '😊' },
     { label: 'Sad', emoji: '😔' },
@@ -52,6 +84,7 @@ export default function EditNote() {
         setContent(data.content);
         setMood(data.mood || '');
         setTags(data.tags ? data.tags.join(', ') : '');
+        localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear local storage on successful load
       } catch (err) {
         console.error('Failed to fetch note for editing:', err);
         setError('Failed to load note. Please try again.');
@@ -96,6 +129,7 @@ export default function EditNote() {
         throw result.error;
       }
       
+      localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear local storage on successful save
       navigate(`/notes/${id}`);
     } catch (error) {
       console.error('Failed to update note:', error);
@@ -226,4 +260,4 @@ export default function EditNote() {
       </div>
     </div>
   );
-} 
+}

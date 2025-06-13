@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -12,7 +12,39 @@ export default function CreateNote() {
   const [tags, setTags] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
   
+  const LOCAL_STORAGE_KEY = `unsaved_note_${user?.id || 'anonymous'}`;
+
+  // Load from local storage on mount
+  useEffect(() => {
+    const savedNote = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedNote) {
+      const { title: savedTitle, content: savedContent } = JSON.parse(savedNote);
+      setTitle(savedTitle);
+      setContent(savedContent);
+      setError('Unsaved changes loaded from previous session.');
+    }
+  }, [user]);
+
+  // Debounced auto-save to local storage
+  useEffect(() => {
+    setIsAutoSaving(true);
+    const handler = setTimeout(() => {
+      if (title.trim() || content.trim()) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ title, content }));
+        console.log('Auto-saved to local storage');
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+      setIsAutoSaving(false);
+    }, 1000); // Save after 1 second of inactivity
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [title, content, user]);
+
   const moodOptions = ['Happy', 'Sad', 'Anxious', 'Excited', 'Calm', 'Frustrated', 'Grateful'];
 
   const handleSubmit = async (e) => {
@@ -49,6 +81,7 @@ export default function CreateNote() {
       }
       
       console.log('Note created successfully:', result.data);
+      localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear local storage on successful save
       navigate('/notes');
     } catch (error) {
       console.error('Error creating note:', error);
@@ -103,7 +136,7 @@ export default function CreateNote() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your thoughts here..."
               rows="10"
-              className="form-input form-textarea"
+              className="form-input"
               required
             ></textarea>
           </div>
@@ -173,4 +206,4 @@ export default function CreateNote() {
       </div>
     </div>
   );
-} 
+}
